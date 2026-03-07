@@ -1,10 +1,1612 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkSmart — Urban Parking Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/Style.css">
 </head>
 <body>
-$END$
+
+<div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">🅿</div>
+            <div class="logo-text">Park<span>Smart</span></div>
+        </div>
+
+        <!-- ROLE SWITCHER -->
+        <div class="role-switcher">
+            <button class="role-btn active" onclick="switchRole('driver', this)">🚗 Driver</button>
+            <button class="role-btn" onclick="switchRole('owner', this)">🏢 Parking Owner</button>
+            <button class="role-btn" onclick="switchRole('admin', this)">⚙️ Admin</button>
+        </div>
+
+        <!-- DRIVER NAV -->
+        <div id="nav-driver" class="nav-section">
+            <div class="nav-label">Driver</div>
+            <button class="nav-item active" onclick="showView('driver-dashboard', this)">
+                <span class="nav-icon">⊞</span> Dashboard
+            </button>
+            <button class="nav-item" onclick="showView('driver-map', this)">
+                <span class="nav-icon">🗺</span> Find Parking
+            </button>
+            <button class="nav-item" onclick="showView('driver-vehicles', this)">
+                <span class="nav-icon">🚗</span> My Vehicles
+            </button>
+            <button class="nav-item" onclick="showView('driver-bookings', this)">
+                <span class="nav-icon">📋</span> Bookings
+                <span class="badge">2</span>
+            </button>
+            <button class="nav-item" onclick="showView('driver-qr', this)">
+                <span class="nav-icon">⬛</span> My QR Code
+            </button>
+        </div>
+
+        <!-- OWNER NAV -->
+        <div id="nav-owner" class="nav-section" style="display:none">
+            <div class="nav-label">Owner</div>
+            <button class="nav-item active" onclick="showView('owner-dashboard', this)">
+                <span class="nav-icon">⊞</span> Dashboard
+            </button>
+            <button class="nav-item" onclick="showView('owner-slots', this)">
+                <span class="nav-icon">🅿</span> Parking Slots
+            </button>
+            <button class="nav-item" onclick="showView('owner-requests', this)">
+                <span class="nav-icon">📨</span> Requests
+                <span class="badge danger">3</span>
+            </button>
+            <button class="nav-item" onclick="showView('owner-scan', this)">
+                <span class="nav-icon">📷</span> Scan QR
+            </button>
+            <button class="nav-item" onclick="showView('owner-earnings', this)">
+                <span class="nav-icon">💰</span> Earnings
+            </button>
+        </div>
+
+        <!-- ADMIN NAV -->
+        <div id="nav-admin" class="nav-section" style="display:none">
+            <div class="nav-label">Admin</div>
+            <button class="nav-item active" onclick="showView('admin-dashboard', this)">
+                <span class="nav-icon">⊞</span> Dashboard
+            </button>
+            <button class="nav-item" onclick="showView('admin-users', this)">
+                <span class="nav-icon">👥</span> Users
+            </button>
+            <button class="nav-item" onclick="showView('admin-verify', this)">
+                <span class="nav-icon">✅</span> Verify Owners
+                <span class="badge warning">4</span>
+            </button>
+            <button class="nav-item" onclick="showView('admin-appointments', this)">
+                <span class="nav-icon">📅</span> Appointments
+            </button>
+            <button class="nav-item" onclick="showView('admin-commission', this)">
+                <span class="nav-icon">💎</span> Commission
+            </button>
+            <button class="nav-item" onclick="showView('admin-analytics', this)">
+                <span class="nav-icon">📊</span> Analytics
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="avatar" id="sidebar-avatar">KM</div>
+                <div class="user-info">
+                    <div class="user-name" id="sidebar-name">Kasun Madushan</div>
+                    <div class="user-role" id="sidebar-role">Driver</div>
+                </div>
+                <div class="online-dot"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <div class="topbar-title" id="topbar-title">Driver Dashboard</div>
+                <div class="topbar-subtitle" id="topbar-sub">Friday, March 06, 2026</div>
+            </div>
+            <div class="topbar-right">
+                <div class="search-box">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Search parking, slots...">
+                </div>
+                <div class="icon-btn" title="Notifications">🔔</div>
+                <div class="icon-btn" title="Settings">⚙</div>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- ========== DRIVER DASHBOARD ========== -->
+            <div id="driver-dashboard" class="view active">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-label">Active Bookings</div>
+                        <div class="stat-value">2</div>
+                        <div class="stat-change"><span class="up">↑ 1</span> from last week</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon">🚗</div>
+                        <div class="stat-label">Registered Vehicles</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change">2 Cars, 1 Bike</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon">⏱</div>
+                        <div class="stat-label">Total Hours Parked</div>
+                        <div class="stat-value">47h</div>
+                        <div class="stat-change"><span class="up">↑ 12%</span> this month</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-icon">💸</div>
+                        <div class="stat-label">Amount Spent</div>
+                        <div class="stat-value">4,250</div>
+                        <div class="stat-change">LKR this month</div>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <!-- MAP PREVIEW -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span>🗺</span>
+                            <span class="card-title">Nearby Parking</span>
+                            <span class="card-subtitle" style="cursor:pointer;color:var(--accent)" onclick="showView('driver-map', null)">View Full Map →</span>
+                        </div>
+                        <div class="map-container">
+                            <div class="map-grid"></div>
+                            <div class="map-roads">
+                                <div class="road-h" style="top:30%"></div>
+                                <div class="road-h" style="top:60%"></div>
+                                <div class="road-v" style="left:25%"></div>
+                                <div class="road-v" style="left:55%"></div>
+                                <div class="road-v" style="left:80%"></div>
+                            </div>
+                            <!-- Pins -->
+                            <div class="map-pin pin-available" style="left:30%;top:45%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">8 Free · 200 LKR/h</div>
+                            </div>
+                            <div class="map-pin pin-busy" style="left:55%;top:35%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">Full</div>
+                            </div>
+                            <div class="map-pin pin-limited" style="left:75%;top:55%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">2 Left · 150 LKR/h</div>
+                            </div>
+                            <div class="map-pin pin-available" style="left:20%;top:70%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">12 Free</div>
+                            </div>
+                            <div class="map-pin pin-user" style="left:48%;top:58%">
+                                <div class="pin-body"><div class="pin-inner">📍</div></div>
+                                <div class="pin-label">You</div>
+                            </div>
+                            <div class="map-controls">
+                                <div class="map-btn">+</div>
+                                <div class="map-btn">−</div>
+                                <div class="map-btn">⊕</div>
+                            </div>
+                            <div class="map-legend">
+                                <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Available</div>
+                                <div class="legend-item"><div class="legend-dot" style="background:var(--warning)"></div>Limited</div>
+                                <div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div>Full</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ACTIVE BOOKINGS + QR -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div class="card">
+                            <div class="card-header"><span>📋</span><span class="card-title">Active Booking</span></div>
+                            <div class="qr-card">
+                                <div class="qr-wrapper">
+                                    <div class="qr-corners"></div>
+                                    <svg class="qr-code-svg" viewBox="0 0 100 100">
+                                        <!-- QR pattern simulation -->
+                                        <rect fill="#fff" width="100" height="100"/>
+                                        <!-- Finder patterns -->
+                                        <rect fill="#000" x="5" y="5" width="25" height="25"/>
+                                        <rect fill="#fff" x="8" y="8" width="19" height="19"/>
+                                        <rect fill="#000" x="11" y="11" width="13" height="13"/>
+                                        <rect fill="#000" x="70" y="5" width="25" height="25"/>
+                                        <rect fill="#fff" x="73" y="8" width="19" height="19"/>
+                                        <rect fill="#000" x="76" y="11" width="13" height="13"/>
+                                        <rect fill="#000" x="5" y="70" width="25" height="25"/>
+                                        <rect fill="#fff" x="8" y="73" width="19" height="19"/>
+                                        <rect fill="#000" x="11" y="76" width="13" height="13"/>
+                                        <!-- Data modules -->
+                                        <rect fill="#000" x="35" y="5" width="5" height="5"/>
+                                        <rect fill="#000" x="45" y="5" width="5" height="5"/>
+                                        <rect fill="#000" x="55" y="5" width="5" height="5"/>
+                                        <rect fill="#000" x="35" y="15" width="5" height="5"/>
+                                        <rect fill="#000" x="50" y="15" width="5" height="5"/>
+                                        <rect fill="#000" x="60" y="15" width="5" height="5"/>
+                                        <rect fill="#000" x="35" y="35" width="5" height="5"/>
+                                        <rect fill="#000" x="45" y="35" width="5" height="5"/>
+                                        <rect fill="#000" x="55" y="35" width="5" height="5"/>
+                                        <rect fill="#000" x="65" y="35" width="5" height="5"/>
+                                        <rect fill="#000" x="35" y="45" width="5" height="5"/>
+                                        <rect fill="#000" x="50" y="45" width="5" height="5"/>
+                                        <rect fill="#000" x="70" y="45" width="5" height="5"/>
+                                        <rect fill="#000" x="80" y="45" width="5" height="5"/>
+                                        <rect fill="#000" x="90" y="45" width="5" height="5"/>
+                                        <rect fill="#000" x="35" y="55" width="5" height="5"/>
+                                        <rect fill="#000" x="45" y="55" width="5" height="5"/>
+                                        <rect fill="#000" x="60" y="55" width="5" height="5"/>
+                                        <rect fill="#000" x="35" y="65" width="5" height="5"/>
+                                        <rect fill="#000" x="55" y="65" width="5" height="5"/>
+                                        <rect fill="#000" x="70" y="65" width="5" height="5"/>
+                                        <rect fill="#000" x="80" y="65" width="5" height="5"/>
+                                        <rect fill="#000" x="45" y="75" width="5" height="5"/>
+                                        <rect fill="#000" x="55" y="75" width="5" height="5"/>
+                                        <rect fill="#000" x="75" y="75" width="5" height="5"/>
+                                        <rect fill="#000" x="90" y="75" width="5" height="5"/>
+                                        <rect fill="#000" x="35" y="85" width="5" height="5"/>
+                                        <rect fill="#000" x="50" y="85" width="5" height="5"/>
+                                        <rect fill="#000" x="65" y="85" width="5" height="5"/>
+                                        <rect fill="#000" x="85" y="85" width="5" height="5"/>
+                                    </svg>
+                                </div>
+                                <div class="qr-id">BOOKING #PS-2024-0381</div>
+                                <div class="qr-booking">Slot A-14, Majestic City Parking</div>
+                                <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">14:00 – 17:00 · CBC1234 · Blue Toyota</div>
+                                <div style="margin-top:12px;">
+                                    <span class="status-pill status-active">● Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT BOOKINGS -->
+                <div class="card">
+                    <div class="card-header"><span>📅</span><span class="card-title">Recent Bookings</span></div>
+                    <div class="card-body">
+                        <div class="booking-item">
+                            <div class="booking-icon" style="background:rgba(0,229,160,0.1)">🅿</div>
+                            <div class="booking-info">
+                                <div class="booking-name">Majestic City Parking · Slot A-14</div>
+                                <div class="booking-meta">Mar 06, 2026 · 14:00 – 17:00 · CBC1234 · 3h</div>
+                            </div>
+                            <div>
+                                <div style="font-size:12px;color:var(--text-muted);text-align:right;margin-bottom:4px;font-family:'DM Mono',monospace">300 LKR</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                        </div>
+                        <div class="booking-item">
+                            <div class="booking-icon" style="background:rgba(255,176,32,0.1)">🅿</div>
+                            <div class="booking-info">
+                                <div class="booking-name">One Galle Face · Slot B-02</div>
+                                <div class="booking-meta">Mar 05, 2026 · 10:00 – 12:00 · WP 7823 · 2h</div>
+                            </div>
+                            <div>
+                                <div style="font-size:12px;color:var(--text-muted);text-align:right;margin-bottom:4px;font-family:'DM Mono',monospace">100 LKR</div>
+                                <span class="status-pill status-pending">Pending</span>
+                            </div>
+                        </div>
+                        <div class="booking-item">
+                            <div class="booking-icon" style="background:rgba(108,99,255,0.1)">🅿</div>
+                            <div class="booking-info">
+                                <div class="booking-name">Liberty Plaza · Slot C-08</div>
+                                <div class="booking-meta">Mar 03, 2026 · 09:00 – 14:00 · CBC1234 · 5h</div>
+                            </div>
+                            <div>
+                                <div style="font-size:12px;color:var(--text-muted);text-align:right;margin-bottom:4px;font-family:'DM Mono',monospace">450 LKR</div>
+                                <span class="status-pill status-completed">Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== DRIVER - MAP VIEW ========== -->
+            <div id="driver-map" class="view">
+                <div class="card" style="margin-bottom:16px;">
+                    <div class="card-body" style="padding:12px 20px;">
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                            <div class="form-control" style="width:auto;flex:1;min-width:200px">📍 Colombo 03, Western Province</div>
+                            <select class="form-control" style="width:150px">
+                                <option>All Types</option>
+                                <option>Car</option>
+                                <option>Bike</option>
+                                <option>Van</option>
+                            </select>
+                            <select class="form-control" style="width:140px">
+                                <option>Any Price</option>
+                                <option>Under 100 LKR/h</option>
+                                <option>100-200 LKR/h</option>
+                                <option>200+ LKR/h</option>
+                            </select>
+                            <button class="btn btn-primary">🔍 Search</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;height:500px;">
+                    <div class="card" style="overflow:hidden;">
+                        <div class="map-container" style="height:100%;">
+                            <div class="map-grid"></div>
+                            <div class="map-roads">
+                                <div class="road-h" style="top:20%"></div>
+                                <div class="road-h" style="top:45%"></div>
+                                <div class="road-h" style="top:70%"></div>
+                                <div class="road-v" style="left:15%"></div>
+                                <div class="road-v" style="left:40%"></div>
+                                <div class="road-v" style="left:65%"></div>
+                                <div class="road-v" style="left:85%"></div>
+                            </div>
+                            <div class="map-pin pin-available" style="left:25%;top:30%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">8 slots · 200/h</div>
+                            </div>
+                            <div class="map-pin pin-busy" style="left:50%;top:25%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">Full</div>
+                            </div>
+                            <div class="map-pin pin-limited" style="left:70%;top:50%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">2 Left · 150/h</div>
+                            </div>
+                            <div class="map-pin pin-available" style="left:15%;top:65%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">12 slots · 120/h</div>
+                            </div>
+                            <div class="map-pin pin-available" style="left:80%;top:75%">
+                                <div class="pin-body"><div class="pin-inner">🅿</div></div>
+                                <div class="pin-label">5 slots · 180/h</div>
+                            </div>
+                            <div class="map-pin pin-user" style="left:44%;top:52%">
+                                <div class="pin-body"><div class="pin-inner">📍</div></div>
+                                <div class="pin-label">Your Location</div>
+                            </div>
+                            <div class="map-controls">
+                                <div class="map-btn">+</div>
+                                <div class="map-btn">−</div>
+                                <div class="map-btn">⊕</div>
+                                <div class="map-btn">🔄</div>
+                            </div>
+                            <div class="map-legend">
+                                <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Available</div>
+                                <div class="legend-item"><div class="legend-dot" style="background:var(--warning)"></div>Limited</div>
+                                <div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div>Full</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOOKING PANEL -->
+                    <div class="card" style="overflow-y:auto;">
+                        <div class="card-header"><span>📋</span><span class="card-title">Book a Slot</span></div>
+                        <div class="card-body">
+                            <div style="background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:12px;padding:12px;margin-bottom:16px;">
+                                <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Majestic City Parking</div>
+                                <div style="font-size:11px;color:var(--text-muted);">📍 Bambalapitiya, Colombo 04</div>
+                                <div style="font-size:11px;color:var(--accent);margin-top:4px;">✓ 8 slots available · 200 LKR/h</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Select Vehicle</label>
+                                <div class="vehicle-grid" style="grid-template-columns:1fr 1fr;">
+                                    <div class="vehicle-card selected">
+                                        <div class="vehicle-check">✓</div>
+                                        <div class="vehicle-type-icon">🚗</div>
+                                        <div class="vehicle-number">CBC 1234</div>
+                                        <div class="vehicle-detail">Blue Toyota Aqua</div>
+                                    </div>
+                                    <div class="vehicle-card" onclick="this.classList.toggle('selected')">
+                                        <div class="vehicle-check">✓</div>
+                                        <div class="vehicle-type-icon">🏍</div>
+                                        <div class="vehicle-number">WP 7823</div>
+                                        <div class="vehicle-detail">Black Honda CB150</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-control" value="2026-03-06">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Slot Number</label>
+                                    <select class="form-control">
+                                        <option>A-12</option>
+                                        <option>A-13</option>
+                                        <option>A-14</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Start Time</label>
+                                    <input type="time" class="form-control" value="14:00" oninput="calcPrice()">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">End Time</label>
+                                    <input type="time" class="form-control" value="17:00" oninput="calcPrice()">
+                                </div>
+                            </div>
+
+                            <div class="price-display">
+                                <div class="price-row"><span>Duration</span><span id="price-duration">3 hours</span></div>
+                                <div class="price-row"><span>Rate (Car)</span><span>100 LKR first 3h + 50/h after</span></div>
+                                <div class="price-row"><span>Commission (20%)</span><span id="price-commission">60 LKR</span></div>
+                                <div class="price-total">
+                                    <span>Total</span>
+                                    <span class="price-amount" id="price-total">300 LKR</span>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" style="width:100%;margin-top:14px;">📋 Submit Booking Request</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== DRIVER - VEHICLES ========== -->
+            <div id="driver-vehicles" class="view">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <div>
+                        <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;">My Vehicles</div>
+                        <div style="font-size:12px;color:var(--text-muted);">Manage your registered vehicles</div>
+                    </div>
+                    <button class="btn btn-primary">+ Add Vehicle</button>
+                </div>
+
+                <div class="vehicle-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+                    <div class="vehicle-card">
+                        <div class="vehicle-check">✓</div>
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="vehicle-type-icon">🚗</div>
+                            <span class="status-pill status-active" style="font-size:10px;padding:3px 8px;">Car</span>
+                        </div>
+                        <div class="vehicle-number">CBC 1234</div>
+                        <div style="font-size:13px;font-weight:600;margin:4px 0;">Toyota Aqua</div>
+                        <div class="vehicle-detail">Blue · 2019</div>
+                        <div style="display:flex;gap:6px;margin-top:12px;">
+                            <button class="btn btn-ghost btn-sm" style="flex:1">Edit</button>
+                            <button class="btn btn-danger btn-sm" style="flex:1">Delete</button>
+                        </div>
+                    </div>
+                    <div class="vehicle-card">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="vehicle-type-icon">🏍</div>
+                            <span class="status-pill status-active" style="font-size:10px;padding:3px 8px;">Bike</span>
+                        </div>
+                        <div class="vehicle-number">WP 7823</div>
+                        <div style="font-size:13px;font-weight:600;margin:4px 0;">Honda CB150R</div>
+                        <div class="vehicle-detail">Black · 2021</div>
+                        <div style="display:flex;gap:6px;margin-top:12px;">
+                            <button class="btn btn-ghost btn-sm" style="flex:1">Edit</button>
+                            <button class="btn btn-danger btn-sm" style="flex:1">Delete</button>
+                        </div>
+                    </div>
+                    <div class="vehicle-card">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div class="vehicle-type-icon">🚐</div>
+                            <span class="status-pill status-active" style="font-size:10px;padding:3px 8px;">Van</span>
+                        </div>
+                        <div class="vehicle-number">NB 4521</div>
+                        <div style="font-size:13px;font-weight:600;margin:4px 0;">Toyota HiAce</div>
+                        <div class="vehicle-detail">White · 2017</div>
+                        <div style="display:flex;gap:6px;margin-top:12px;">
+                            <button class="btn btn-ghost btn-sm" style="flex:1">Edit</button>
+                            <button class="btn btn-danger btn-sm" style="flex:1">Delete</button>
+                        </div>
+                    </div>
+                    <!-- Add new card -->
+                    <div class="vehicle-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text-dim);min-height:160px;">
+                        <div style="font-size:32px;">+</div>
+                        <div style="font-size:13px;">Add New Vehicle</div>
+                    </div>
+                </div>
+
+                <!-- ADD VEHICLE FORM -->
+                <div class="card">
+                    <div class="card-header"><span>🚗</span><span class="card-title">Add New Vehicle</span></div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Vehicle Number *</label>
+                                <input class="form-control" placeholder="e.g. CBC 1234">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Vehicle Type *</label>
+                                <select class="form-control">
+                                    <option>Car</option>
+                                    <option>Bike</option>
+                                    <option>Van</option>
+                                    <option>Truck</option>
+                                    <option>Three-Wheeler</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Model *</label>
+                                <input class="form-control" placeholder="e.g. Toyota Aqua">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Color</label>
+                                <input class="form-control" placeholder="e.g. Blue">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Year</label>
+                            <input class="form-control" placeholder="e.g. 2021" style="max-width:200px">
+                        </div>
+                        <button class="btn btn-primary">+ Add Vehicle</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== DRIVER - BOOKINGS ========== -->
+            <div id="driver-bookings" class="view">
+                <div class="tabs">
+                    <button class="tab-btn active">All</button>
+                    <button class="tab-btn">Active</button>
+                    <button class="tab-btn">Pending</button>
+                    <button class="tab-btn">Completed</button>
+                    <button class="tab-btn">Rejected</button>
+                </div>
+                <div class="card">
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Location</th>
+                                <th>Vehicle</th>
+                                <th>Date & Time</th>
+                                <th>Duration</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0381</span></td>
+                                <td>Majestic City · A-14</td>
+                                <td>CBC 1234</td>
+                                <td style="font-size:12px;">Mar 06 · 14:00–17:00</td>
+                                <td>3h</td>
+                                <td style="font-family:'DM Mono',monospace;">300 LKR</td>
+                                <td><span class="status-pill status-active">Active</span></td>
+                                <td><button class="btn btn-ghost btn-sm">View QR</button></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0380</span></td>
+                                <td>One Galle Face · B-02</td>
+                                <td>WP 7823</td>
+                                <td style="font-size:12px;">Mar 05 · 10:00–12:00</td>
+                                <td>2h</td>
+                                <td style="font-family:'DM Mono',monospace;">100 LKR</td>
+                                <td><span class="status-pill status-pending">Pending</span></td>
+                                <td><button class="btn btn-danger btn-sm">Cancel</button></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0375</span></td>
+                                <td>Liberty Plaza · C-08</td>
+                                <td>CBC 1234</td>
+                                <td style="font-size:12px;">Mar 03 · 09:00–14:00</td>
+                                <td>5h</td>
+                                <td style="font-family:'DM Mono',monospace;">450 LKR</td>
+                                <td><span class="status-pill status-completed">Completed</span></td>
+                                <td><button class="btn btn-ghost btn-sm">Receipt</button></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0360</span></td>
+                                <td>Colombo City · D-03</td>
+                                <td>NB 4521</td>
+                                <td style="font-size:12px;">Feb 28 · 13:00–15:00</td>
+                                <td>2h</td>
+                                <td style="font-family:'DM Mono',monospace;">200 LKR</td>
+                                <td><span class="status-pill status-rejected">Rejected</span></td>
+                                <td><button class="btn btn-ghost btn-sm">Rebook</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== DRIVER - QR CODE ========== -->
+            <div id="driver-qr" class="view">
+                <div style="max-width:500px;margin:0 auto;">
+                    <div class="card">
+                        <div class="card-header"><span>⬛</span><span class="card-title">Booking Confirmation</span></div>
+                        <div class="card-body" style="text-align:center;">
+                            <div style="margin-bottom:16px;">
+                                <span class="status-pill status-active" style="font-size:13px;padding:6px 16px;">● Active Booking</span>
+                            </div>
+                            <div class="qr-wrapper" style="width:200px;height:200px;margin:0 auto 20px;">
+                                <div class="qr-corners"></div>
+                                <svg viewBox="0 0 100 100" width="200" height="200">
+                                    <rect fill="#fff" width="100" height="100"/>
+                                    <rect fill="#000" x="5" y="5" width="25" height="25"/>
+                                    <rect fill="#fff" x="8" y="8" width="19" height="19"/>
+                                    <rect fill="#000" x="11" y="11" width="13" height="13"/>
+                                    <rect fill="#000" x="70" y="5" width="25" height="25"/>
+                                    <rect fill="#fff" x="73" y="8" width="19" height="19"/>
+                                    <rect fill="#000" x="76" y="11" width="13" height="13"/>
+                                    <rect fill="#000" x="5" y="70" width="25" height="25"/>
+                                    <rect fill="#fff" x="8" y="73" width="19" height="19"/>
+                                    <rect fill="#000" x="11" y="76" width="13" height="13"/>
+                                    <rect fill="#000" x="35" y="5" width="5" height="5"/>
+                                    <rect fill="#000" x="45" y="5" width="5" height="5"/>
+                                    <rect fill="#000" x="55" y="10" width="5" height="5"/>
+                                    <rect fill="#000" x="35" y="20" width="5" height="5"/>
+                                    <rect fill="#000" x="50" y="20" width="5" height="5"/>
+                                    <rect fill="#000" x="60" y="15" width="5" height="5"/>
+                                    <rect fill="#000" x="35" y="35" width="5" height="5"/>
+                                    <rect fill="#000" x="45" y="35" width="5" height="5"/>
+                                    <rect fill="#000" x="55" y="35" width="5" height="5"/>
+                                    <rect fill="#000" x="65" y="40" width="5" height="5"/>
+                                    <rect fill="#000" x="35" y="50" width="5" height="5"/>
+                                    <rect fill="#000" x="50" y="50" width="5" height="5"/>
+                                    <rect fill="#000" x="70" y="50" width="5" height="5"/>
+                                    <rect fill="#000" x="80" y="45" width="5" height="5"/>
+                                    <rect fill="#000" x="90" y="50" width="5" height="5"/>
+                                    <rect fill="#000" x="40" y="60" width="5" height="5"/>
+                                    <rect fill="#000" x="55" y="60" width="5" height="5"/>
+                                    <rect fill="#000" x="75" y="65" width="5" height="5"/>
+                                    <rect fill="#000" x="35" y="75" width="5" height="5"/>
+                                    <rect fill="#000" x="50" y="80" width="5" height="5"/>
+                                    <rect fill="#000" x="65" y="75" width="5" height="5"/>
+                                    <rect fill="#000" x="85" y="80" width="5" height="5"/>
+                                    <rect fill="#000" x="45" y="90" width="5" height="5"/>
+                                    <rect fill="#000" x="60" y="85" width="5" height="5"/>
+                                    <rect fill="#000" x="80" y="90" width="5" height="5"/>
+                                </svg>
+                            </div>
+                            <div style="background:var(--surface2);border-radius:14px;padding:16px;margin-bottom:16px;text-align:left;">
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Booking ID</div><div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0381</div></div>
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Slot</div><div style="font-size:13px;font-weight:600;">A-14</div></div>
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Location</div><div style="font-size:13px;font-weight:600;">Majestic City</div></div>
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Vehicle</div><div style="font-size:13px;font-weight:600;">CBC 1234</div></div>
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Date</div><div style="font-size:13px;font-weight:600;">Mar 06, 2026</div></div>
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Time</div><div style="font-size:13px;font-weight:600;">14:00 – 17:00</div></div>
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Duration</div><div style="font-size:13px;font-weight:600;">3 Hours</div></div>
+                                    <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Total Paid</div><div style="font-size:13px;font-weight:700;color:var(--accent)">300 LKR</div></div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:10px;">
+                                <button class="btn btn-ghost" style="flex:1;">⬇ Download</button>
+                                <button class="btn btn-primary" style="flex:1;">📤 Share</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER DASHBOARD ========== -->
+            <div id="owner-dashboard" class="view">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon">🅿</div>
+                        <div class="stat-label">Total Slots</div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-change">18 Active, 6 Inactive</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-label">Today's Bookings</div>
+                        <div class="stat-value">11</div>
+                        <div class="stat-change"><span class="up">↑ 3</span> from yesterday</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon">📨</div>
+                        <div class="stat-label">Pending Requests</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change danger" style="color:var(--danger)">Needs attention</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-label">Monthly Revenue</div>
+                        <div class="stat-value">38,400</div>
+                        <div class="stat-change">LKR (after 20% fee)</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- EARNINGS CHART -->
+                    <div class="card">
+                        <div class="card-header"><span>📈</span><span class="card-title">Daily Earnings</span><span class="card-subtitle">This Week</span></div>
+                        <div class="card-body">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;">
+                                <div>
+                                    <div style="font-size:28px;font-family:'Syne',sans-serif;font-weight:800;">48,000 <span style="font-size:14px;color:var(--text-muted);font-weight:400">LKR</span></div>
+                                    <div style="font-size:12px;color:var(--accent);">↑ 18% vs last week</div>
+                                </div>
+                                <div style="font-size:12px;color:var(--text-muted);">Net after 20% commission: <b style="color:var(--text)">38,400 LKR</b></div>
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height:40%"><div class="bar-tip">5,200</div></div>
+                                <div class="chart-bar" style="height:65%"><div class="bar-tip">7,800</div></div>
+                                <div class="chart-bar" style="height:50%"><div class="bar-tip">6,000</div></div>
+                                <div class="chart-bar highlighted" style="height:80%"><div class="bar-tip">9,600</div></div>
+                                <div class="chart-bar" style="height:55%"><div class="bar-tip">6,600</div></div>
+                                <div class="chart-bar" style="height:70%"><div class="bar-tip">8,400</div></div>
+                                <div class="chart-bar" style="height:38%"><div class="bar-tip">4,400</div></div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-top:6px;padding:0 4px;">
+                                <span style="font-size:10px;color:var(--text-dim);">Mon</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Tue</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Wed</span>
+                                <span style="font-size:10px;color:var(--accent);font-weight:600;">Thu</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Fri</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Sat</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Sun</span>
+                            </div>
+                            <!-- COMMISSION RING -->
+                            <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:16px;">
+                                <div class="commission-display">
+                                    <div class="ring-wrap">
+                                        <svg class="ring-svg" viewBox="0 0 90 90" width="90" height="90">
+                                            <circle cx="45" cy="45" r="35" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+                                            <circle cx="45" cy="45" r="35" fill="none" stroke="var(--accent)" stroke-width="8" stroke-dasharray="175 220" stroke-linecap="round"/>
+                                            <circle cx="45" cy="45" r="35" fill="none" stroke="var(--accent3)" stroke-width="8" stroke-dasharray="44 220" stroke-dashoffset="-175" stroke-linecap="round"/>
+                                        </svg>
+                                        <div class="ring-text">
+                                            <div class="ring-pct">80%</div>
+                                            <div class="ring-sub">YOUR CUT</div>
+                                        </div>
+                                    </div>
+                                    <div class="commission-details">
+                                        <div class="comm-row"><span class="comm-label">Gross Revenue</span><span class="comm-value">48,000 LKR</span></div>
+                                        <div class="comm-row"><span class="comm-label">Admin Commission (20%)</span><span class="comm-value" style="color:var(--accent3)">9,600 LKR</span></div>
+                                        <div class="comm-row"><span class="comm-label">Your Earnings (80%)</span><span class="comm-value" style="color:var(--accent)">38,400 LKR</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PENDING REQUESTS -->
+                    <div class="card">
+                        <div class="card-header"><span>📨</span><span class="card-title">Pending Requests</span><span class="badge danger" style="margin-left:auto;">3</span></div>
+                        <div class="card-body">
+                            <div class="approval-card">
+                                <div class="approval-header">
+                                    <div class="approval-title">Kasun Madushan</div>
+                                    <div class="approval-time">2 min ago</div>
+                                </div>
+                                <div class="approval-details">CBC 1234 · Blue Toyota Aqua</div>
+                                <div class="approval-meta">
+                                    <div class="meta-chip">🅿 Slot A-14</div>
+                                    <div class="meta-chip">📅 Mar 06</div>
+                                    <div class="meta-chip">⏰ 14:00–17:00</div>
+                                    <div class="meta-chip">⏱ 3h</div>
+                                    <div class="meta-chip">💰 300 LKR</div>
+                                </div>
+                                <div class="approval-actions">
+                                    <button class="btn btn-primary btn-sm" style="flex:1">✓ Accept</button>
+                                    <button class="btn btn-danger btn-sm" style="flex:1">✕ Reject</button>
+                                </div>
+                            </div>
+                            <div class="approval-card">
+                                <div class="approval-header">
+                                    <div class="approval-title">Malith Perera</div>
+                                    <div class="approval-time">15 min ago</div>
+                                </div>
+                                <div class="approval-details">WP 5542 · Red Honda Civic</div>
+                                <div class="approval-meta">
+                                    <div class="meta-chip">🅿 Slot B-03</div>
+                                    <div class="meta-chip">📅 Mar 06</div>
+                                    <div class="meta-chip">⏰ 16:00–19:00</div>
+                                    <div class="meta-chip">⏱ 3h</div>
+                                    <div class="meta-chip">💰 300 LKR</div>
+                                </div>
+                                <div class="approval-actions">
+                                    <button class="btn btn-primary btn-sm" style="flex:1">✓ Accept</button>
+                                    <button class="btn btn-danger btn-sm" style="flex:1">✕ Reject</button>
+                                </div>
+                            </div>
+                            <div class="approval-card">
+                                <div class="approval-header">
+                                    <div class="approval-title">Nishani Fernando</div>
+                                    <div class="approval-time">1h ago</div>
+                                </div>
+                                <div class="approval-details">WP 7823 · Black Honda CB150 (Bike)</div>
+                                <div class="approval-meta">
+                                    <div class="meta-chip">🅿 Slot B-10</div>
+                                    <div class="meta-chip">📅 Mar 07</div>
+                                    <div class="meta-chip">⏰ 09:00–11:00</div>
+                                    <div class="meta-chip">⏱ 2h</div>
+                                    <div class="meta-chip">💰 100 LKR</div>
+                                </div>
+                                <div class="approval-actions">
+                                    <button class="btn btn-primary btn-sm" style="flex:1">✓ Accept</button>
+                                    <button class="btn btn-danger btn-sm" style="flex:1">✕ Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER - SLOTS ========== -->
+            <div id="owner-slots" class="view">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <div>
+                        <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;">Parking Slots</div>
+                        <div style="font-size:12px;color:var(--text-muted);">Manage your parking locations</div>
+                    </div>
+                    <button class="btn btn-primary">+ Add Slot</button>
+                </div>
+                <div class="card" style="margin-bottom:16px;">
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Slot ID</th>
+                                <th>Address</th>
+                                <th>Coordinates</th>
+                                <th>Capacity</th>
+                                <th>Available</th>
+                                <th>Rate/h</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;color:var(--accent)">#SL-001</span></td>
+                                <td>Majestic City, Bambalapitiya</td>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted)">6.8925, 79.8562</span></td>
+                                <td>20</td>
+                                <td><span class="slot-badge slot-open">12 Free</span></td>
+                                <td style="font-family:'DM Mono',monospace;">200 LKR</td>
+                                <td><span class="slot-badge slot-open">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Deactivate</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;color:var(--accent)">#SL-002</span></td>
+                                <td>One Galle Face, Kollupitiya</td>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted)">6.9027, 79.8480</span></td>
+                                <td>15</td>
+                                <td><span class="slot-badge slot-partial">3 Left</span></td>
+                                <td style="font-family:'DM Mono',monospace;">250 LKR</td>
+                                <td><span class="slot-badge slot-open">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Deactivate</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;color:var(--accent)">#SL-003</span></td>
+                                <td>Liberty Plaza, Kollupitiya</td>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted)">6.9017, 79.8512</span></td>
+                                <td>10</td>
+                                <td><span class="slot-badge slot-full">Full</span></td>
+                                <td style="font-family:'DM Mono',monospace;">180 LKR</td>
+                                <td><span class="slot-badge slot-open">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Deactivate</button></div></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADD SLOT FORM -->
+                <div class="card">
+                    <div class="card-header"><span>🅿</span><span class="card-title">Add New Parking Slot</span></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Address / Location Name *</label>
+                            <input class="form-control" placeholder="e.g. Majestic City, Bambalapitiya, Colombo 04">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Latitude *</label>
+                                <input class="form-control" placeholder="e.g. 6.8925" type="number" step="0.0001">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Longitude *</label>
+                                <input class="form-control" placeholder="e.g. 79.8562" type="number" step="0.0001">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Capacity *</label>
+                                <input class="form-control" placeholder="e.g. 20" type="number">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Rate per Hour (LKR)</label>
+                                <input class="form-control" placeholder="e.g. 200" type="number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Availability Status</label>
+                            <select class="form-control" style="max-width:200px">
+                                <option>Available</option>
+                                <option>Not Available</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary">+ Add Parking Slot</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER - SCAN QR ========== -->
+            <div id="owner-scan" class="view">
+                <div style="max-width:500px;margin:0 auto;">
+                    <div class="card">
+                        <div class="card-header"><span>📷</span><span class="card-title">Scan Arrival QR Code</span></div>
+                        <div class="card-body" style="text-align:center;">
+                            <div class="scan-area">
+                                <div class="scan-line"></div>
+                                <div class="scan-icon">⬛</div>
+                                <div class="scan-text">Position QR code in frame</div>
+                            </div>
+                            <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Use device camera to scan the driver's QR code upon arrival</p>
+                            <div style="display:flex;gap:10px;margin-bottom:20px;">
+                                <button class="btn btn-primary" style="flex:1;">📷 Open Camera</button>
+                                <button class="btn btn-ghost" style="flex:1;">⌨ Enter Code</button>
+                            </div>
+                            <div style="border-top:1px solid var(--border);padding-top:16px;">
+                                <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Or verify manually</div>
+                                <input class="form-control" placeholder="Enter Booking ID (e.g. PS-2024-0381)" style="margin-bottom:10px;">
+                                <button class="btn btn-primary" style="width:100%;">✓ Verify Booking</button>
+                            </div>
+                            <!-- Verified State Preview -->
+                            <div style="margin-top:20px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);border-radius:14px;padding:16px;text-align:left;">
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                                    <div style="width:32px;height:32px;background:rgba(0,229,160,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;">✓</div>
+                                    <div>
+                                        <div style="font-size:13px;font-weight:700;color:var(--accent)">Booking Verified</div>
+                                        <div style="font-size:11px;color:var(--text-muted)">#PS-2024-0381</div>
+                                    </div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+                                    <div><span style="color:var(--text-muted)">Driver:</span> Kasun Madushan</div>
+                                    <div><span style="color:var(--text-muted)">Vehicle:</span> CBC 1234</div>
+                                    <div><span style="color:var(--text-muted)">Slot:</span> A-14</div>
+                                    <div><span style="color:var(--text-muted)">Time:</span> 14:00–17:00</div>
+                                </div>
+                                <button class="btn btn-primary" style="width:100%;margin-top:12px;">✓ Mark as Arrived</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER EARNINGS ========== -->
+            <div id="owner-earnings" class="view">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Gross Revenue (Month)</div>
+                        <div class="stat-value" style="font-size:24px;">48,000</div>
+                        <div class="stat-change">LKR total collected</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-label">Platform Commission</div>
+                        <div class="stat-value" style="font-size:24px;">9,600</div>
+                        <div class="stat-change">20% to ParkSmart</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Net Earnings</div>
+                        <div class="stat-value" style="font-size:24px;color:var(--accent)">38,400</div>
+                        <div class="stat-change up">80% yours</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-label">Completed Bookings</div>
+                        <div class="stat-value" style="font-size:24px;">128</div>
+                        <div class="stat-change">This month</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span>💰</span><span class="card-title">Transaction History</span></div>
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Driver</th>
+                                <th>Slot</th>
+                                <th>Date</th>
+                                <th>Duration</th>
+                                <th>Gross</th>
+                                <th>Commission (20%)</th>
+                                <th>Net Earned</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0381</td>
+                                <td>Kasun M.</td>
+                                <td>A-14</td>
+                                <td style="font-size:12px;">Mar 06</td>
+                                <td>3h</td>
+                                <td class="tx-amount-positive">300 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent3);">60 LKR</td>
+                                <td class="tx-amount-positive">240 LKR</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0375</td>
+                                <td>Malith P.</td>
+                                <td>C-08</td>
+                                <td style="font-size:12px;">Mar 03</td>
+                                <td>5h</td>
+                                <td class="tx-amount-positive">450 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent3);">90 LKR</td>
+                                <td class="tx-amount-positive">360 LKR</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0360</td>
+                                <td>Nishani F.</td>
+                                <td>B-10</td>
+                                <td style="font-size:12px;">Feb 28</td>
+                                <td>2h (Bike)</td>
+                                <td class="tx-amount-positive">100 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent3);">20 LKR</td>
+                                <td class="tx-amount-positive">80 LKR</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== ADMIN DASHBOARD ========== -->
+            <div id="admin-dashboard" class="view">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-value">1,248</div>
+                        <div class="stat-change"><span class="up">↑ 42</span> this week</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon">🏢</div>
+                        <div class="stat-label">Parking Owners</div>
+                        <div class="stat-value">87</div>
+                        <div class="stat-change">4 pending verification</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-label">Total Appointments</div>
+                        <div class="stat-value">5,821</div>
+                        <div class="stat-change"><span class="up">↑ 12%</span> this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💎</div>
+                        <div class="stat-label">Commission Earned</div>
+                        <div class="stat-value">124k</div>
+                        <div class="stat-change">LKR this month</div>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <!-- VEHICLE TYPE DONUT -->
+                    <div class="analytics-card">
+                        <div style="font-size:13px;font-weight:700;margin-bottom:14px;">Vehicle Type Distribution</div>
+                        <div class="donut-wrap">
+                            <svg class="donut-svg" viewBox="0 0 80 80">
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="#1a2035" stroke-width="12"/>
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="94 188" stroke-linecap="butt" transform="rotate(-90 40 40)"/>
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="var(--accent3)" stroke-width="12" stroke-dasharray="56 188" stroke-dashoffset="-94" stroke-linecap="butt" transform="rotate(-90 40 40)"/>
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="var(--accent2)" stroke-width="12" stroke-dasharray="38 188" stroke-dashoffset="-150" stroke-linecap="butt" transform="rotate(-90 40 40)"/>
+                            </svg>
+                            <div class="donut-legend">
+                                <div class="legend-row">
+                                    <div class="legend-color-label"><div class="color-swatch" style="background:var(--accent)"></div>Cars</div>
+                                    <div class="legend-pct">50%</div>
+                                </div>
+                                <div class="legend-row">
+                                    <div class="legend-color-label"><div class="color-swatch" style="background:var(--accent3)"></div>Bikes</div>
+                                    <div class="legend-pct">30%</div>
+                                </div>
+                                <div class="legend-row">
+                                    <div class="legend-color-label"><div class="color-swatch" style="background:var(--accent2)"></div>Vans</div>
+                                    <div class="legend-pct">20%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOOKING STATUS -->
+                    <div class="analytics-card">
+                        <div style="font-size:13px;font-weight:700;margin-bottom:14px;">Booking Status Overview</div>
+                        <div class="donut-wrap">
+                            <svg class="donut-svg" viewBox="0 0 80 80">
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="#1a2035" stroke-width="12"/>
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="var(--accent)" stroke-width="12" stroke-dasharray="112 188" stroke-linecap="butt" transform="rotate(-90 40 40)"/>
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="var(--warning)" stroke-width="12" stroke-dasharray="38 188" stroke-dashoffset="-112" stroke-linecap="butt" transform="rotate(-90 40 40)"/>
+                                <circle cx="40" cy="40" r="30" fill="none" stroke="var(--danger)" stroke-width="12" stroke-dasharray="38 188" stroke-dashoffset="-150" stroke-linecap="butt" transform="rotate(-90 40 40)"/>
+                            </svg>
+                            <div class="donut-legend">
+                                <div class="legend-row">
+                                    <div class="legend-color-label"><div class="color-swatch" style="background:var(--accent)"></div>Completed</div>
+                                    <div class="legend-pct">60%</div>
+                                </div>
+                                <div class="legend-row">
+                                    <div class="legend-color-label"><div class="color-swatch" style="background:var(--warning)"></div>Pending</div>
+                                    <div class="legend-pct">20%</div>
+                                </div>
+                                <div class="legend-row">
+                                    <div class="legend-color-label"><div class="color-swatch" style="background:var(--danger)"></div>Rejected</div>
+                                    <div class="legend-pct">20%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT ACTIVITY -->
+                <div class="card">
+                    <div class="card-header"><span>📋</span><span class="card-title">Recent System Activity</span></div>
+                    <div class="card-body">
+                        <div class="notification">
+                            <div class="notif-dot" style="background:var(--accent)"></div>
+                            <div>
+                                <div class="notif-title">New Owner Registration</div>
+                                <div class="notif-msg">Saman Jayawardena registered as Parking Owner — awaiting verification</div>
+                                <div class="notif-time">5 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="notification">
+                            <div class="notif-dot" style="background:var(--accent3)"></div>
+                            <div>
+                                <div class="notif-title">Transaction Completed</div>
+                                <div class="notif-msg">Booking #PS-2024-0381 completed — Commission: 60 LKR received</div>
+                                <div class="notif-time">12 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="notification">
+                            <div class="notif-dot" style="background:var(--warning)"></div>
+                            <div>
+                                <div class="notif-title">Slot Reported Full</div>
+                                <div class="notif-msg">Liberty Plaza Slot C is at 100% capacity — 3 drivers redirected</div>
+                                <div class="notif-time">34 minutes ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== ADMIN - VERIFY OWNERS ========== -->
+            <div id="admin-verify" class="view">
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;">Owner Verification</div>
+                    <div style="font-size:12px;color:var(--text-muted);">Review and verify parking owner applications</div>
+                </div>
+                <div class="card">
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Owner ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Location</th>
+                                <th>Applied</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#OWN-041</td>
+                                <td>Saman Jayawardena</td>
+                                <td style="font-size:12px;color:var(--text-muted)">saman@email.com</td>
+                                <td>Majestic City, Col 04</td>
+                                <td style="font-size:12px;">Mar 06, 2026</td>
+                                <td><span class="verify-badge verify-pending">⏳ Pending</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-primary btn-sm">✓ Verify</button><button class="btn btn-danger btn-sm">✕ Reject</button></div></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#OWN-040</td>
+                                <td>Ruwan Silva</td>
+                                <td style="font-size:12px;color:var(--text-muted)">ruwan@email.com</td>
+                                <td>Liberty Plaza, Col 03</td>
+                                <td style="font-size:12px;">Mar 05, 2026</td>
+                                <td><span class="verify-badge verify-verified">✓ Verified</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">Details</button><button class="btn btn-danger btn-sm">Suspend</button></div></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#OWN-039</td>
+                                <td>Dilani Perera</td>
+                                <td style="font-size:12px;color:var(--text-muted)">dilani@email.com</td>
+                                <td>One Galle Face, Col 02</td>
+                                <td style="font-size:12px;">Mar 04, 2026</td>
+                                <td><span class="verify-badge verify-pending">⏳ Pending</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-primary btn-sm">✓ Verify</button><button class="btn btn-danger btn-sm">✕ Reject</button></div></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== ADMIN - COMMISSION ========== -->
+            <div id="admin-commission" class="view">
+                <div class="stats-row" style="grid-template-columns:repeat(3,1fr);">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Transactions</div>
+                        <div class="stat-value">5,821</div>
+                        <div class="stat-change">This month</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-label">Total Platform Revenue</div>
+                        <div class="stat-value">620k</div>
+                        <div class="stat-change">LKR gross</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Admin Commission (20%)</div>
+                        <div class="stat-value" style="color:var(--accent);">124k</div>
+                        <div class="stat-change">LKR earned</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><span>💎</span><span class="card-title">Commission Transactions</span></div>
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Driver</th>
+                                <th>Owner</th>
+                                <th>Vehicle</th>
+                                <th>Date</th>
+                                <th>Gross Amount</th>
+                                <th>Commission (20%)</th>
+                                <th>Owner Payout (80%)</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-0381</td>
+                                <td>Kasun M.</td>
+                                <td>Ruwan S.</td>
+                                <td>Car</td>
+                                <td style="font-size:12px;">Mar 06</td>
+                                <td class="tx-amount-positive">300 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent);font-weight:700;">60 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--text-muted);">240 LKR</td>
+                                <td><span class="status-pill status-completed">Settled</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-0375</td>
+                                <td>Malith P.</td>
+                                <td>Ruwan S.</td>
+                                <td>Car</td>
+                                <td style="font-size:12px;">Mar 03</td>
+                                <td class="tx-amount-positive">450 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent);font-weight:700;">90 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--text-muted);">360 LKR</td>
+                                <td><span class="status-pill status-completed">Settled</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-0360</td>
+                                <td>Nishani F.</td>
+                                <td>Dilani P.</td>
+                                <td>Bike</td>
+                                <td style="font-size:12px;">Feb 28</td>
+                                <td class="tx-amount-positive">100 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent);font-weight:700;">20 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--text-muted);">80 LKR</td>
+                                <td><span class="status-pill status-completed">Settled</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-0355</td>
+                                <td>Kasun M.</td>
+                                <td>Saman J.</td>
+                                <td>Van</td>
+                                <td style="font-size:12px;">Feb 25</td>
+                                <td class="tx-amount-positive">550 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent);font-weight:700;">110 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--text-muted);">440 LKR</td>
+                                <td><span class="status-pill status-pending">Pending</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- FORMULA REFERENCE -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><span>📐</span><span class="card-title">Smart Pricing Formula Reference</span></div>
+                    <div class="card-body">
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                            <div style="background:var(--surface2);border-radius:12px;padding:16px;border:1px solid var(--border);">
+                                <div style="font-size:13px;font-weight:700;margin-bottom:8px;">🏍 Bike Pricing</div>
+                                <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted);line-height:1.8;">
+                                    hours ≤ 3: <span style="color:var(--accent)">100 LKR</span><br>
+                                    hours &gt; 3: <span style="color:var(--accent)">100 + ((h-3) × 50)</span>
+                                </div>
+                                <div style="margin-top:10px;font-size:11px;color:var(--text-muted);">e.g. 5h = 100 + (2×50) = <b style="color:var(--accent)">200 LKR</b></div>
+                            </div>
+                            <div style="background:var(--surface2);border-radius:12px;padding:16px;border:1px solid var(--border);">
+                                <div style="font-size:13px;font-weight:700;margin-bottom:8px;">🚗 Car Pricing</div>
+                                <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted);line-height:1.8;">
+                                    hours ≤ 3: <span style="color:var(--accent3)">300 LKR</span><br>
+                                    hours &gt; 3: <span style="color:var(--accent3)">300 + ((h-3) × 100)</span>
+                                </div>
+                                <div style="margin-top:10px;font-size:11px;color:var(--text-muted);">e.g. 5h = 300 + (2×100) = <b style="color:var(--accent3)">500 LKR</b></div>
+                            </div>
+                            <div style="background:var(--surface2);border-radius:12px;padding:16px;border:1px solid var(--border);">
+                                <div style="font-size:13px;font-weight:700;margin-bottom:8px;">💎 Commission</div>
+                                <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted);line-height:1.8;">
+                                    Commission = <span style="color:var(--accent2)">Total × 0.20</span><br>
+                                    Owner Net = <span style="color:var(--accent2)">Total × 0.80</span>
+                                </div>
+                                <div style="margin-top:10px;font-size:11px;color:var(--text-muted);">e.g. 300 LKR → Admin: <b style="color:var(--accent)">60</b>, Owner: <b style="color:var(--accent)">240</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== ADMIN ANALYTICS ========== -->
+            <div id="admin-analytics" class="view">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Avg Booking Duration</div>
+                        <div class="stat-value">3.2h</div>
+                        <div class="stat-change">Per session</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-label">Peak Hour</div>
+                        <div class="stat-value">18:00</div>
+                        <div class="stat-change">Evening rush</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-label">Slot Utilization</div>
+                        <div class="stat-value">74%</div>
+                        <div class="stat-change"><span class="up">↑ 8%</span> this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">User Retention</div>
+                        <div class="stat-value">82%</div>
+                        <div class="stat-change">Monthly active</div>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div style="font-size:13px;font-weight:700;margin-bottom:14px;">Revenue by Location</div>
+                        <div style="display:flex;flex-direction:column;gap:10px;">
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Majestic City</span><span style="color:var(--accent);font-family:'DM Mono',monospace;">48k LKR</span></div>
+                                <div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:80%;background:var(--accent);border-radius:3px;"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>One Galle Face</span><span style="color:var(--accent);font-family:'DM Mono',monospace;">36k LKR</span></div>
+                                <div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:60%;background:var(--accent3);border-radius:3px;"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Liberty Plaza</span><span style="color:var(--accent);font-family:'DM Mono',monospace;">24k LKR</span></div>
+                                <div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:40%;background:var(--accent2);border-radius:3px;"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Colombo City</span><span style="color:var(--accent);font-family:'DM Mono',monospace;">16k LKR</span></div>
+                                <div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;"><div style="height:100%;width:27%;background:var(--danger);border-radius:3px;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div style="font-size:13px;font-weight:700;margin-bottom:14px;">System Entity Summary</div>
+                        <div style="display:flex;flex-direction:column;gap:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--surface2);border-radius:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;"><span>👤</span><span style="font-size:13px;">Total Users (Drivers)</span></div>
+                                <span style="font-family:'DM Mono',monospace;color:var(--accent);font-weight:700;">1,161</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--surface2);border-radius:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;"><span>🏢</span><span style="font-size:13px;">Parking Owners</span></div>
+                                <span style="font-family:'DM Mono',monospace;color:var(--accent3);font-weight:700;">87</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--surface2);border-radius:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;"><span>🚗</span><span style="font-size:13px;">Registered Vehicles</span></div>
+                                <span style="font-family:'DM Mono',monospace;color:var(--accent2);font-weight:700;">2,340</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--surface2);border-radius:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;"><span>🅿</span><span style="font-size:13px;">Parking Slots</span></div>
+                                <span style="font-family:'DM Mono',monospace;color:var(--warning);font-weight:700;">312</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--surface2);border-radius:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;"><span>📋</span><span style="font-size:13px;">Total Appointments</span></div>
+                                <span style="font-family:'DM Mono',monospace;color:var(--danger);font-weight:700;">5,821</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== ADMIN USERS ========== -->
+            <div id="admin-users" class="view">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <div>
+                        <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;">User Management</div>
+                        <div style="font-size:12px;color:var(--text-muted);">1,248 total registered users</div>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <select class="form-control" style="width:140px"><option>All Roles</option><option>Driver</option><option>Owner</option><option>Admin</option></select>
+                        <button class="btn btn-primary">Export CSV</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#U-1248</td>
+                                <td>Kasun Madushan</td>
+                                <td style="font-size:12px;color:var(--text-muted)">kasun@email.com</td>
+                                <td><span class="slot-badge slot-open">Driver</span></td>
+                                <td style="font-size:12px;">Jan 15, 2026</td>
+                                <td><span class="verify-badge verify-verified">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">View</button><button class="btn btn-danger btn-sm">Suspend</button></div></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#U-1087</td>
+                                <td>Ruwan Silva</td>
+                                <td style="font-size:12px;color:var(--text-muted)">ruwan@email.com</td>
+                                <td><span class="slot-badge slot-partial">Owner</span></td>
+                                <td style="font-size:12px;">Nov 02, 2025</td>
+                                <td><span class="verify-badge verify-verified">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">View</button><button class="btn btn-danger btn-sm">Suspend</button></div></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#U-1040</td>
+                                <td>Saman Jayawardena</td>
+                                <td style="font-size:12px;color:var(--text-muted)">saman@email.com</td>
+                                <td><span class="slot-badge slot-partial">Owner</span></td>
+                                <td style="font-size:12px;">Mar 06, 2026</td>
+                                <td><span class="verify-badge verify-pending">Pending</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">View</button><button class="btn btn-danger btn-sm">Suspend</button></div></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== ADMIN APPOINTMENTS ========== -->
+            <div id="admin-appointments" class="view">
+                <div class="card">
+                    <div class="card-header"><span>📅</span><span class="card-title">All Appointments</span><span class="card-subtitle">5,821 total</span></div>
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Driver</th>
+                                <th>Owner / Location</th>
+                                <th>Vehicle</th>
+                                <th>Date & Time</th>
+                                <th>Amount</th>
+                                <th>Commission</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-0381</td>
+                                <td>Kasun M.</td>
+                                <td>Ruwan S. · Majestic</td>
+                                <td>CBC 1234 (Car)</td>
+                                <td style="font-size:12px;">Mar 06 · 14:00–17:00</td>
+                                <td class="tx-amount-positive">300 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent)">60 LKR</td>
+                                <td><span class="status-pill status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-0380</td>
+                                <td>Malith P.</td>
+                                <td>Dilani P. · Galle Face</td>
+                                <td>WP 5542 (Car)</td>
+                                <td style="font-size:12px;">Mar 05 · 10:00–12:00</td>
+                                <td class="tx-amount-positive">300 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent)">60 LKR</td>
+                                <td><span class="status-pill status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-0375</td>
+                                <td>Nishani F.</td>
+                                <td>Ruwan S. · Liberty</td>
+                                <td>WP 7823 (Bike)</td>
+                                <td style="font-size:12px;">Mar 03 · 09:00–14:00</td>
+                                <td class="tx-amount-positive">100 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent)">20 LKR</td>
+                                <td><span class="status-pill status-completed">Completed</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OWNER REQUESTS -->
+            <div id="owner-requests" class="view">
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;">Appointment Requests</div>
+                    <div style="font-size:12px;color:var(--text-muted);">Review and manage incoming booking requests</div>
+                </div>
+                <div class="approval-card">
+                    <div class="approval-header">
+                        <div class="approval-title">Kasun Madushan</div>
+                        <div class="approval-time">2 min ago</div>
+                    </div>
+                    <div class="approval-details">CBC 1234 · Blue Toyota Aqua · Car</div>
+                    <div class="approval-meta">
+                        <div class="meta-chip">🅿 Slot A-14</div>
+                        <div class="meta-chip">📅 Mar 06, 2026</div>
+                        <div class="meta-chip">⏰ 14:00–17:00</div>
+                        <div class="meta-chip">⏱ 3 hours</div>
+                        <div class="meta-chip">💰 300 LKR</div>
+                        <div class="meta-chip" style="color:var(--accent)">Commission: 60 LKR</div>
+                    </div>
+                    <div class="approval-actions">
+                        <button class="btn btn-primary" style="flex:1">✓ Accept</button>
+                        <button class="btn btn-danger" style="flex:1">✕ Reject</button>
+                    </div>
+                </div>
+                <div class="approval-card">
+                    <div class="approval-header">
+                        <div class="approval-title">Malith Perera</div>
+                        <div class="approval-time">15 min ago</div>
+                    </div>
+                    <div class="approval-details">WP 5542 · Red Honda Civic · Car</div>
+                    <div class="approval-meta">
+                        <div class="meta-chip">🅿 Slot B-03</div>
+                        <div class="meta-chip">📅 Mar 06, 2026</div>
+                        <div class="meta-chip">⏰ 16:00–19:00</div>
+                        <div class="meta-chip">⏱ 3 hours</div>
+                        <div class="meta-chip">💰 300 LKR</div>
+                    </div>
+                    <div class="approval-actions">
+                        <button class="btn btn-primary" style="flex:1">✓ Accept</button>
+                        <button class="btn btn-danger" style="flex:1">✕ Reject</button>
+                    </div>
+                </div>
+                <div class="approval-card">
+                    <div class="approval-header">
+                        <div class="approval-title">Nishani Fernando</div>
+                        <div class="approval-time">1h ago</div>
+                    </div>
+                    <div class="approval-details">WP 7823 · Black Honda CB150 · Bike</div>
+                    <div class="approval-meta">
+                        <div class="meta-chip">🅿 Slot B-10</div>
+                        <div class="meta-chip">📅 Mar 07, 2026</div>
+                        <div class="meta-chip">⏰ 09:00–11:00</div>
+                        <div class="meta-chip">⏱ 2 hours</div>
+                        <div class="meta-chip">💰 100 LKR</div>
+                    </div>
+                    <div class="approval-actions">
+                        <button class="btn btn-primary" style="flex:1">✓ Accept</button>
+                        <button class="btn btn-danger" style="flex:1">✕ Reject</button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end content -->
+    </main>
+</div>
+
+<script src="js/script.js"></script>
 </body>
 </html>

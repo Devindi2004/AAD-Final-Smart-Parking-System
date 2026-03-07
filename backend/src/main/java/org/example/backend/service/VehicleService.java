@@ -1,4 +1,17 @@
 package org.example.backend.service;
 
-public interface Vehicle {
+import org.example.backend.dto.VehicleDTO;
+
+import java.util.List;
+
+public interface VehicleService {
+
+    VehicleDTO saveVehicle(VehicleDTO dto);
+
+    List<VehicleDTO> getAllVehicles();
+
+    VehicleDTO getVehicleById(Long id);
+
+    void deleteVehicle(Long id);
+
 }

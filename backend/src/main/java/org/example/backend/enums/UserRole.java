@@ -1,4 +1,7 @@
 package org.example.backend.enums;
 
-public class UserRole {
+public enum UserRole {
+    DRIVER,
+    OWNER,
+    ADMIN
 }

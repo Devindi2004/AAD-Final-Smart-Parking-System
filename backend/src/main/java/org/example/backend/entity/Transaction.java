@@ -1,10 +1,13 @@
 package org.example.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.example.backend.enums.TransactionStatus;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 public class Transaction {
 
     @Id
@@ -17,10 +20,12 @@ public class Transaction {
 
     private double ownerEarning;
 
-    private String status; // PAID, PENDING
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
 
     private LocalDateTime paymentDate;
 
     @OneToOne
+    @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 }
