@@ -1,263 +1,88 @@
- // STATE
-    let currentRole = 'driver';
-    let activeNavItem = null;
+const VEHICLE_URL = "http://localhost:8080/api/vehicles";
 
-    // ROLE SWITCH
-    function switchRole(role, btn) {
-    currentRole = role;
-    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+// --- VEHICLE ACTIONS ---
 
-    document.querySelectorAll('[id^="nav-"]').forEach(n => n.style.display = 'none');
-    document.getElementById('nav-' + role).style.display = 'block';
+function addNewVehicle() {
+    const data = {
+        vehicleNumber: $('#v_number').val(),
+        vehicleType: $('#v_type').val(),
+        model: $('#v_model').val(),
+        color: $('#v_color').val()
+    };
 
-    const titles = { driver: 'Driver Dashboard', owner: 'Owner Dashboard', admin: 'Admin Dashboard' };
-    const names = { driver: 'Kasun Madushan', owner: 'Ruwan Silva', admin: 'Admin Agent' };
-    const initials = { driver: 'KM', owner: 'RS', admin: 'AA' };
-    const roles = { driver: 'Driver', owner: 'Parking Owner', admin: 'System Admin' };
+    if(!data.vehicleNumber || !data.model) {
+        alert("Please fill in the required fields!");
+        return;
+    }
 
-    document.getElementById('topbar-title').textContent = titles[role];
-    document.getElementById('sidebar-name').textContent = names[role];
-    document.getElementById('sidebar-role').textContent = roles[role];
-    document.getElementById('sidebar-avatar').textContent = initials[role];
-
-    const firstView = { driver: 'driver-dashboard', owner: 'owner-dashboard', admin: 'admin-dashboard' };
-
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(firstView[role]).classList.add('active');
-
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const navItems = document.getElementById('nav-' + role).querySelectorAll('.nav-item');
-    if (navItems.length) navItems[0].classList.add('active');
-}
-
-    // SHOW VIEW
-    function showView(viewId, navEl) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    const view = document.getElementById(viewId);
-    if (view) view.classList.add('active');
-
-    if (navEl) {
-    const parent = navEl.closest('[id^="nav-"]');
-    if (parent) parent.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    navEl.classList.add('active');
-}
-
-    const titleMap = {
-    'driver-dashboard': 'Driver Dashboard',
-    'driver-map': 'Find Parking',
-    'driver-vehicles': 'My Vehicles',
-    'driver-bookings': 'Booking History',
-    'driver-qr': 'My QR Code',
-    'owner-dashboard': 'Owner Dashboard',
-    'owner-slots': 'Parking Slots',
-    'owner-requests': 'Appointment Requests',
-    'owner-scan': 'Scan QR Code',
-    'owner-earnings': 'Earnings',
-    'admin-dashboard': 'Admin Dashboard',
-    'admin-users': 'User Management',
-    'admin-verify': 'Verify Owners',
-    'admin-appointments': 'All Appointments',
-    'admin-commission': 'Commission Tracking',
-    'admin-analytics': 'Analytics & Reports'
-};
-
-    document.getElementById('topbar-title').textContent = titleMap[viewId] || 'ParkSmart';
-}
-
-    // PRICE CALCULATOR
-    function calcPrice() {
-    const start = document.querySelector('input[type=time]');
-    const end = document.querySelectorAll('input[type=time]')[1];
-    if (!start || !end) return;
-
-    const [sh, sm] = start.value.split(':').map(Number);
-    const [eh, em] = end.value.split(':').map(Number);
-    const hours = ((eh * 60 + em) - (sh * 60 + sm)) / 60;
-
-    if (hours <= 0) return;
-
-    // Bike pricing rule
-    let total = hours <= 3 ? 100 : 100 + ((hours - 3) * 50);
-    const commission = total * 0.20;
-
-    const durEl = document.getElementById('price-duration');
-    const totEl = document.getElementById('price-total');
-    const comEl = document.getElementById('price-commission');
-
-    if (durEl) durEl.textContent = hours.toFixed(1) + ' hours';
-    if (totEl) totEl.textContent = Math.round(total) + ' LKR';
-    if (comEl) comEl.textContent = Math.round(commission) + ' LKR';
-}
-
-    // TAB BUTTONS
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        this.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
+    $.ajax({
+        url: VEHICLE_URL,
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function(response) {
+            alert("Vehicle Added Successfully!");
+            $('#v_number, #v_model, #v_color').val('');
+        },
+        error: function(err) {
+            alert("Error saving vehicle. Please check backend connection.");
+        }
     });
-});
-
-    // Vehicle card selection
-    document.querySelectorAll('.vehicle-card').forEach(card => {
-    if (!card.querySelector('.vehicle-check')) return;
-    card.addEventListener('click', function() {
-    const siblings = this.parentElement.querySelectorAll('.vehicle-card');
-    siblings.forEach(s => s.classList.remove('selected'));
-    this.classList.add('selected');
-});
-});
-    // ================= BACKEND API BASE =================
-    const API_BASE = "http://localhost:8080/api";
-
-
-    // ================= LOAD VEHICLES =================
-    async function loadVehicles(){
-
-    try{
-
-    const res = await fetch(API_BASE + "/vehicles");
-    const vehicles = await res.json();
-
-    const grid = document.querySelector("#driver-vehicles .vehicle-grid");
-
-    if(!grid) return;
-
-    grid.innerHTML = "";
-
-    vehicles.forEach(v => {
-
-    grid.innerHTML += `
-            <div class="vehicle-card">
-                <div class="vehicle-type-icon">🚗</div>
-                <div class="vehicle-number">${v.vehicleNumber}</div>
-                <div class="vehicle-detail">${v.model} · ${v.color}</div>
-            </div>
-            `;
-
-});
-
-}catch(e){
-    console.error("Vehicle load error", e);
 }
 
+// --- QR ACTIONS ---
+
+// Download QR as Image
+function downloadQR() {
+    const element = document.getElementById('qr-capture-area');
+    html2canvas(element).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'ParkSmart-Booking-QR.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
 }
 
+// Share Options (Email / WhatsApp)
+function openShareOptions() {
+    const shareChoice = prompt("Choose Share Method:\n1. Email\n2. WhatsApp\n(Enter 1 or 2)");
 
-    // ================= ADD VEHICLE =================
-    async function addVehicle(){
+    const bookingID = document.getElementById('display-bid').textContent;
+    const message = `ParkSmart Booking Details - ID: ${bookingID}. Check my QR code for arrival.`;
 
-    const number = document.querySelector("input[placeholder='e.g. CBC 1234']").value;
-    const model = document.querySelector("input[placeholder='e.g. Toyota Aqua']").value;
-    const color = document.querySelector("input[placeholder='e.g. Blue']").value;
-    const year = document.querySelector("input[placeholder='e.g. 2021']").value;
-    const type = document.querySelector("select").value;
-
-    const vehicle = {
-    vehicleNumber:number,
-    model:model,
-    color:color,
-    year:year,
-    type:type,
-    driverId:1
-};
-
-    await fetch(API_BASE + "/vehicles",{
-    method:"POST",
-    headers:{
-    "Content-Type":"application/json"
-},
-    body:JSON.stringify(vehicle)
-});
-
-    loadVehicles();
-
+    if (shareChoice === "1") {
+        const email = prompt("Enter Recipient Email Address:");
+        if (email) {
+            window.location.href = `mailto:${email}?subject=ParkSmart Booking QR&body=${encodeURIComponent(message)}`;
+        }
+    } else if (shareChoice === "2") {
+        const phone = prompt("Enter WhatsApp Number (with country code, e.g., 94712345678):");
+        if (phone) {
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+    } else {
+        alert("Invalid selection!");
+    }
 }
 
+// Existing showView function (Keep this as is)
+function showView(id, btn) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
 
-    // ================= LOAD BOOKINGS =================
-    async function loadBookings(){
+    if (btn) {
+        const parent = btn.closest('.nav-section') || btn.closest('aside');
+        if (parent) parent.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        btn.classList.add('active');
+    }
 
-    const res = await fetch(API_BASE + "/appointments");
-    const bookings = await res.json();
-
-    const table = document.querySelector("#driver-bookings tbody");
-
-    if(!table) return;
-
-    table.innerHTML="";
-
-    bookings.forEach(b=>{
-
-    table.innerHTML+=`
-        <tr>
-            <td>#${b.bookingCode}</td>
-            <td>${b.slotId}</td>
-            <td>${b.vehicleId}</td>
-            <td>${b.startTime}</td>
-            <td>${b.duration}h</td>
-            <td>${b.totalAmount} LKR</td>
-            <td>${b.status}</td>
-            <td>-</td>
-        </tr>
-        `;
-
-});
-
+    const titles = {
+        'driver-dashboard': 'Driver Dashboard',
+        'driver-vehicles': 'My Vehicles',
+        'driver-qr': 'My QR Code'
+        // Add other titles here...
+    };
+    const titleEl = document.getElementById('topbar-title');
+    if (titleEl && titles[id]) titleEl.textContent = titles[id];
 }
-
-
-    // ================= CREATE BOOKING =================
-    async function createBooking(){
-
-    const booking = {
-
-    bookingCode:"PS-"+Date.now(),
-    startTime:"2026-03-07T10:00:00",
-    endTime:"2026-03-07T13:00:00",
-    duration:3,
-    totalAmount:300,
-    commission:60,
-    status:"PENDING",
-    driverId:1,
-    slotId:1,
-    vehicleId:1
-
-};
-
-    await fetch(API_BASE + "/appointments",{
-
-    method:"POST",
-    headers:{
-    "Content-Type":"application/json"
-},
-    body:JSON.stringify(booking)
-
-});
-
-    alert("Booking Created");
-
-    loadBookings();
-
-}
-
-
-    // ================= LOAD SLOTS =================
-    async function loadSlots(){
-
-    const res = await fetch(API_BASE + "/slots");
-    const slots = await res.json();
-
-    console.log("Slots:",slots);
-
-}
-
-
-    // ================= PAGE LOAD =================
-    document.addEventListener("DOMContentLoaded",()=>{
-
-    loadVehicles();
-    loadBookings();
-    loadSlots();
-
-});

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkSmart — Parking Owner Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=Cabinet+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/Style.css">
+</head>
+<body>
+<div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">🅿</div>
+            <div class="logo-text">Park<span>Smart</span></div>
+        </div>
+
+        <div class="nav-section" id="nav-owner">
+            <div class="role-label">Parking Owner</div>
+            <button class="nav-item active" onclick="showView('owner-dashboard', this)">
+                <span class="nav-icon">⊞</span> Dashboard
+            </button>
+            <button class="nav-item" onclick="showView('owner-slots', this)">
+                <span class="nav-icon">🅿</span> Parking Slots
+            </button>
+            <button class="nav-item" onclick="showView('owner-requests', this)">
+                <span class="nav-icon">📨</span> Requests
+                <span class="badge danger">3</span>
+            </button>
+            <button class="nav-item" onclick="showView('owner-scan', this)">
+                <span class="nav-icon">📷</span> Scan QR
+            </button>
+            <button class="nav-item" onclick="showView('owner-earnings', this)">
+                <span class="nav-icon">💰</span> Earnings
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="avatar" style="background:linear-gradient(135deg,var(--warning),var(--accent3))">RS</div>
+                <div class="user-info">
+                    <div class="user-name">Ruwan Silva</div>
+                    <div class="user-role">Parking Owner</div>
+                </div>
+                <div class="online-dot"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <div class="topbar">
+            <div>
+                <div class="topbar-title" id="topbar-title">Owner Dashboard</div>
+                <div class="topbar-subtitle">Friday, March 06, 2026</div>
+            </div>
+            <div class="topbar-right">
+                <div class="search-box">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Search bookings, slots...">
+                </div>
+                <div class="icon-btn">🔔</div>
+                <div class="icon-btn">⚙</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- ========== OWNER DASHBOARD ========== -->
+            <div id="owner-dashboard" class="view active">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon">🅿</div>
+                        <div class="stat-label">Total Slots</div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-change">18 Active, 6 Inactive</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-label">Today's Bookings</div>
+                        <div class="stat-value">11</div>
+                        <div class="stat-change"><span class="up">↑ 3</span> from yesterday</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon">📨</div>
+                        <div class="stat-label">Pending Requests</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change" style="color:var(--danger)">Needs attention</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-label">Monthly Revenue</div>
+                        <div class="stat-value">38,400</div>
+                        <div class="stat-change">LKR (after 20% fee)</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- EARNINGS CHART -->
+                    <div class="card">
+                        <div class="card-header"><span>📈</span><span class="card-title">Daily Earnings</span><span class="card-subtitle">This Week</span></div>
+                        <div class="card-body">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;">
+                                <div>
+                                    <div style="font-size:28px;font-family:'Syne',sans-serif;font-weight:800;">48,000 <span style="font-size:14px;color:var(--text-muted);font-weight:400">LKR</span></div>
+                                    <div style="font-size:12px;color:var(--accent);">↑ 18% vs last week</div>
+                                </div>
+                                <div style="font-size:12px;color:var(--text-muted);">Net after 20%: <b style="color:var(--text)">38,400 LKR</b></div>
+                            </div>
+                            <div class="mini-chart">
+                                <div class="chart-bar" style="height:40%"><div class="bar-tip">5,200</div></div>
+                                <div class="chart-bar" style="height:65%"><div class="bar-tip">7,800</div></div>
+                                <div class="chart-bar" style="height:50%"><div class="bar-tip">6,000</div></div>
+                                <div class="chart-bar highlighted" style="height:80%"><div class="bar-tip">9,600</div></div>
+                                <div class="chart-bar" style="height:55%"><div class="bar-tip">6,600</div></div>
+                                <div class="chart-bar" style="height:70%"><div class="bar-tip">8,400</div></div>
+                                <div class="chart-bar" style="height:38%"><div class="bar-tip">4,400</div></div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-top:6px;padding:0 4px;">
+                                <span style="font-size:10px;color:var(--text-dim);">Mon</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Tue</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Wed</span>
+                                <span style="font-size:10px;color:var(--accent);font-weight:600;">Thu</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Fri</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Sat</span>
+                                <span style="font-size:10px;color:var(--text-dim);">Sun</span>
+                            </div>
+                            <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:16px;">
+                                <div class="commission-display">
+                                    <div class="ring-wrap">
+                                        <svg class="ring-svg" viewBox="0 0 90 90" width="90" height="90">
+                                            <circle cx="45" cy="45" r="35" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+                                            <circle cx="45" cy="45" r="35" fill="none" stroke="var(--accent)" stroke-width="8" stroke-dasharray="175 220" stroke-linecap="round"/>
+                                            <circle cx="45" cy="45" r="35" fill="none" stroke="var(--accent3)" stroke-width="8" stroke-dasharray="44 220" stroke-dashoffset="-175" stroke-linecap="round"/>
+                                        </svg>
+                                        <div class="ring-text">
+                                            <div class="ring-pct">80%</div>
+                                            <div class="ring-sub">YOUR CUT</div>
+                                        </div>
+                                    </div>
+                                    <div class="commission-details">
+                                        <div class="comm-row"><span class="comm-label">Gross Revenue</span><span class="comm-value">48,000 LKR</span></div>
+                                        <div class="comm-row"><span class="comm-label">Admin Commission (20%)</span><span class="comm-value" style="color:var(--accent3)">9,600 LKR</span></div>
+                                        <div class="comm-row"><span class="comm-label">Your Earnings (80%)</span><span class="comm-value" style="color:var(--accent)">38,400 LKR</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PENDING REQUESTS -->
+                    <div class="card">
+                        <div class="card-header"><span>📨</span><span class="card-title">Pending Requests</span><span class="badge danger" style="margin-left:auto;">3</span></div>
+                        <div class="card-body">
+                            <div class="approval-card">
+                                <div class="approval-header"><div class="approval-title">Kasun Madushan</div><div class="approval-time">2 min ago</div></div>
+                                <div class="approval-details">CBC 1234 · Blue Toyota Aqua</div>
+                                <div class="approval-meta">
+                                    <div class="meta-chip">🅿 Slot A-14</div><div class="meta-chip">📅 Mar 06</div>
+                                    <div class="meta-chip">⏰ 14:00–17:00</div><div class="meta-chip">⏱ 3h</div>
+                                    <div class="meta-chip">💰 300 LKR</div>
+                                </div>
+                                <div class="approval-actions">
+                                    <button class="btn btn-primary btn-sm" style="flex:1">✓ Accept</button>
+                                    <button class="btn btn-danger btn-sm" style="flex:1">✕ Reject</button>
+                                </div>
+                            </div>
+                            <div class="approval-card">
+                                <div class="approval-header"><div class="approval-title">Malith Perera</div><div class="approval-time">15 min ago</div></div>
+                                <div class="approval-details">WP 5542 · Red Honda Civic</div>
+                                <div class="approval-meta">
+                                    <div class="meta-chip">🅿 Slot B-03</div><div class="meta-chip">📅 Mar 06</div>
+                                    <div class="meta-chip">⏰ 16:00–19:00</div><div class="meta-chip">⏱ 3h</div>
+                                    <div class="meta-chip">💰 300 LKR</div>
+                                </div>
+                                <div class="approval-actions">
+                                    <button class="btn btn-primary btn-sm" style="flex:1">✓ Accept</button>
+                                    <button class="btn btn-danger btn-sm" style="flex:1">✕ Reject</button>
+                                </div>
+                            </div>
+                            <div class="approval-card">
+                                <div class="approval-header"><div class="approval-title">Nishani Fernando</div><div class="approval-time">1h ago</div></div>
+                                <div class="approval-details">WP 7823 · Black Honda CB150 (Bike)</div>
+                                <div class="approval-meta">
+                                    <div class="meta-chip">🅿 Slot B-10</div><div class="meta-chip">📅 Mar 07</div>
+                                    <div class="meta-chip">⏰ 09:00–11:00</div><div class="meta-chip">⏱ 2h</div>
+                                    <div class="meta-chip">💰 100 LKR</div>
+                                </div>
+                                <div class="approval-actions">
+                                    <button class="btn btn-primary btn-sm" style="flex:1">✓ Accept</button>
+                                    <button class="btn btn-danger btn-sm" style="flex:1">✕ Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER SLOTS ========== -->
+            <div id="owner-slots" class="view">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                    <div>
+                        <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;">Parking Slots</div>
+                        <div style="font-size:12px;color:var(--text-muted);">Manage your parking locations</div>
+                    </div>
+                    <button class="btn btn-primary">+ Add Slot</button>
+                </div>
+                <div class="card" style="margin-bottom:16px;">
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Slot ID</th><th>Address</th><th>Coordinates</th>
+                                <th>Capacity</th><th>Available</th><th>Rate/h</th>
+                                <th>Status</th><th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;color:var(--accent)">#SL-001</span></td>
+                                <td>Majestic City, Bambalapitiya</td>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted)">6.8925, 79.8562</span></td>
+                                <td>20</td>
+                                <td><span class="slot-badge slot-open">12 Free</span></td>
+                                <td style="font-family:'DM Mono',monospace;">200 LKR</td>
+                                <td><span class="slot-badge slot-open">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Deactivate</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;color:var(--accent)">#SL-002</span></td>
+                                <td>One Galle Face, Kollupitiya</td>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted)">6.9027, 79.8480</span></td>
+                                <td>15</td>
+                                <td><span class="slot-badge slot-partial">3 Left</span></td>
+                                <td style="font-family:'DM Mono',monospace;">250 LKR</td>
+                                <td><span class="slot-badge slot-open">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Deactivate</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-family:'DM Mono',monospace;color:var(--accent)">#SL-003</span></td>
+                                <td>Liberty Plaza, Kollupitiya</td>
+                                <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted)">6.9017, 79.8512</span></td>
+                                <td>10</td>
+                                <td><span class="slot-badge slot-full">Full</span></td>
+                                <td style="font-family:'DM Mono',monospace;">180 LKR</td>
+                                <td><span class="slot-badge slot-open">Active</span></td>
+                                <td><div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">Edit</button><button class="btn btn-danger btn-sm">Deactivate</button></div></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span>🅿</span><span class="card-title">Add New Parking Slot</span></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Address / Location Name *</label>
+                            <input class="form-control" placeholder="e.g. Majestic City, Bambalapitiya, Colombo 04">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Latitude *</label>
+                                <input class="form-control" placeholder="e.g. 6.8925" type="number" step="0.0001">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Longitude *</label>
+                                <input class="form-control" placeholder="e.g. 79.8562" type="number" step="0.0001">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Capacity *</label>
+                                <input class="form-control" placeholder="e.g. 20" type="number">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Rate per Hour (LKR)</label>
+                                <input class="form-control" placeholder="e.g. 200" type="number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Availability Status</label>
+                            <select class="form-control" style="max-width:200px"><option>Available</option><option>Not Available</option></select>
+                        </div>
+                        <button class="btn btn-primary">+ Add Parking Slot</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER REQUESTS ========== -->
+            <div id="owner-requests" class="view">
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:16px;font-weight:700;font-family:'Syne',sans-serif;">Appointment Requests</div>
+                    <div style="font-size:12px;color:var(--text-muted);">Review and manage incoming booking requests</div>
+                </div>
+                <div class="approval-card">
+                    <div class="approval-header"><div class="approval-title">Kasun Madushan</div><div class="approval-time">2 min ago</div></div>
+                    <div class="approval-details">CBC 1234 · Blue Toyota Aqua · Car</div>
+                    <div class="approval-meta">
+                        <div class="meta-chip">🅿 Slot A-14</div><div class="meta-chip">📅 Mar 06, 2026</div>
+                        <div class="meta-chip">⏰ 14:00–17:00</div><div class="meta-chip">⏱ 3 hours</div>
+                        <div class="meta-chip">💰 300 LKR</div>
+                        <div class="meta-chip" style="color:var(--accent)">Commission: 60 LKR</div>
+                    </div>
+                    <div class="approval-actions">
+                        <button class="btn btn-primary" style="flex:1">✓ Accept</button>
+                        <button class="btn btn-danger" style="flex:1">✕ Reject</button>
+                    </div>
+                </div>
+                <div class="approval-card">
+                    <div class="approval-header"><div class="approval-title">Malith Perera</div><div class="approval-time">15 min ago</div></div>
+                    <div class="approval-details">WP 5542 · Red Honda Civic · Car</div>
+                    <div class="approval-meta">
+                        <div class="meta-chip">🅿 Slot B-03</div><div class="meta-chip">📅 Mar 06, 2026</div>
+                        <div class="meta-chip">⏰ 16:00–19:00</div><div class="meta-chip">⏱ 3 hours</div>
+                        <div class="meta-chip">💰 300 LKR</div>
+                    </div>
+                    <div class="approval-actions">
+                        <button class="btn btn-primary" style="flex:1">✓ Accept</button>
+                        <button class="btn btn-danger" style="flex:1">✕ Reject</button>
+                    </div>
+                </div>
+                <div class="approval-card">
+                    <div class="approval-header"><div class="approval-title">Nishani Fernando</div><div class="approval-time">1h ago</div></div>
+                    <div class="approval-details">WP 7823 · Black Honda CB150 · Bike</div>
+                    <div class="approval-meta">
+                        <div class="meta-chip">🅿 Slot B-10</div><div class="meta-chip">📅 Mar 07, 2026</div>
+                        <div class="meta-chip">⏰ 09:00–11:00</div><div class="meta-chip">⏱ 2 hours</div>
+                        <div class="meta-chip">💰 100 LKR</div>
+                    </div>
+                    <div class="approval-actions">
+                        <button class="btn btn-primary" style="flex:1">✓ Accept</button>
+                        <button class="btn btn-danger" style="flex:1">✕ Reject</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER SCAN QR ========== -->
+            <div id="owner-scan" class="view">
+                <div style="max-width:500px;margin:0 auto;">
+                    <div class="card">
+                        <div class="card-header"><span>📷</span><span class="card-title">Scan Arrival QR Code</span></div>
+                        <div class="card-body" style="text-align:center;">
+                            <div class="scan-area">
+                                <div class="scan-line"></div>
+                                <div class="scan-icon">⬛</div>
+                                <div class="scan-text">Position QR code in frame</div>
+                            </div>
+                            <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Use device camera to scan the driver's QR code upon arrival</p>
+                            <div style="display:flex;gap:10px;margin-bottom:20px;">
+                                <button class="btn btn-primary" style="flex:1;">📷 Open Camera</button>
+                                <button class="btn btn-ghost" style="flex:1;">⌨ Enter Code</button>
+                            </div>
+                            <div style="border-top:1px solid var(--border);padding-top:16px;">
+                                <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Or verify manually</div>
+                                <input class="form-control" placeholder="Enter Booking ID (e.g. PS-2024-0381)" style="margin-bottom:10px;">
+                                <button class="btn btn-primary" style="width:100%;">✓ Verify Booking</button>
+                            </div>
+                            <div style="margin-top:20px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);border-radius:14px;padding:16px;text-align:left;">
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                                    <div style="width:32px;height:32px;background:rgba(0,229,160,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;">✓</div>
+                                    <div>
+                                        <div style="font-size:13px;font-weight:700;color:var(--accent)">Booking Verified</div>
+                                        <div style="font-size:11px;color:var(--text-muted)">#PS-2024-0381</div>
+                                    </div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+                                    <div><span style="color:var(--text-muted)">Driver:</span> Kasun Madushan</div>
+                                    <div><span style="color:var(--text-muted)">Vehicle:</span> CBC 1234</div>
+                                    <div><span style="color:var(--text-muted)">Slot:</span> A-14</div>
+                                    <div><span style="color:var(--text-muted)">Time:</span> 14:00–17:00</div>
+                                </div>
+                                <button class="btn btn-primary" style="width:100%;margin-top:12px;">✓ Mark as Arrived</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== OWNER EARNINGS ========== -->
+            <div id="owner-earnings" class="view">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Gross Revenue (Month)</div>
+                        <div class="stat-value" style="font-size:24px;">48,000</div>
+                        <div class="stat-change">LKR total collected</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-label">Platform Commission</div>
+                        <div class="stat-value" style="font-size:24px;">9,600</div>
+                        <div class="stat-change">20% to ParkSmart</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Net Earnings</div>
+                        <div class="stat-value" style="font-size:24px;color:var(--accent)">38,400</div>
+                        <div class="stat-change up">80% yours</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-label">Completed Bookings</div>
+                        <div class="stat-value" style="font-size:24px;">128</div>
+                        <div class="stat-change">This month</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span>💰</span><span class="card-title">Transaction History</span></div>
+                    <div class="card-body" style="padding:0;">
+                        <table class="slots-table">
+                            <thead>
+                            <tr>
+                                <th>Booking ID</th><th>Driver</th><th>Slot</th><th>Date</th>
+                                <th>Duration</th><th>Gross</th><th>Commission (20%)</th><th>Net Earned</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0381</td>
+                                <td>Kasun M.</td><td>A-14</td><td style="font-size:12px;">Mar 06</td><td>3h</td>
+                                <td class="tx-amount-positive">300 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent3);">60 LKR</td>
+                                <td class="tx-amount-positive">240 LKR</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0375</td>
+                                <td>Malith P.</td><td>C-08</td><td style="font-size:12px;">Mar 03</td><td>5h</td>
+                                <td class="tx-amount-positive">450 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent3);">90 LKR</td>
+                                <td class="tx-amount-positive">360 LKR</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">#PS-2024-0360</td>
+                                <td>Nishani F.</td><td>B-10</td><td style="font-size:12px;">Feb 28</td><td>2h (Bike)</td>
+                                <td class="tx-amount-positive">100 LKR</td>
+                                <td style="font-family:'DM Mono',monospace;color:var(--accent3);">20 LKR</td>
+                                <td class="tx-amount-positive">80 LKR</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+<script src="../js/script.js"></script>
+</body>
+</html>
